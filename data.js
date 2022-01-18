@@ -1,19 +1,23 @@
 let users = [
   {
     id: 1,
-    name: 'Mauro'
+    name: 'Mauro',
+    cars: [1, 3]
   },
   {
     id: 2,
-    name: 'Sofi'
+    name: 'Sofi',
+    cars: [2]
   },
   {
     id: 3,
-    name: 'Gladys'
+    name: 'Gladys',
+    cars: []
   },
   {
     id: 4,
-    name: 'Luisa'
+    name: 'Luisa',
+    cars: []
   }
 ]
 
@@ -22,19 +26,22 @@ let cars = [
     id: 1,
     make: 'Mazda',
     model: '3',
-    colour: 'titanium'
+    colour: 'titanium',
+    ownedBy: 1
   },
   {
     id: 2,
     make: 'Ford',
     model: 'Focus',
-    colour: 'red'
+    colour: 'red',
+    ownedBy: 2
   },
   {
     id: 3,
     make: 'Chevrolet',
     model: 'Camaro',
-    colour: 'yellow'
+    colour: 'yellow',
+    ownedBy: 1
   }
 ]
 

@@ -19,6 +19,7 @@ const typeDefs = gql`
   type User {
     id: ID!
     name: String!
+    car: [Car]
   }
 
   type Car {
@@ -26,6 +27,7 @@ const typeDefs = gql`
     make: String!
     model: String!
     colour: String!
+    owner: User!
   }
 `
 const resolvers = {
@@ -42,6 +44,21 @@ const resolvers = {
     cars: () => cars,
     car: (parent, { id }) => {
       return cars.filter(car => car.id === id)[0]
+    }
+  },
+  Car: {
+    owner: (parent) => {
+      console.log('Car custom resolver, parent')
+      console.log(parent)
+      return users[parent.ownedBy - 1]
+    }
+  },
+  User: {
+    car: (parent) => {
+      console.log('User car resolver')
+      console.log(parent.cars)
+      console.log(cars.filter(car => parent.cars.includes(car.id)))
+      return cars.filter(car => parent.cars.includes(car.id))
     }
   }
 }
