@@ -2,8 +2,8 @@ const express = require('express')
 const app = express()
 const { ApolloServer, gql } = require('apollo-server-express')
 const { ApolloServerPluginLandingPageGraphQLPlayground } = require('apollo-server-core')
-const users = require('./data').users
-const cars = require('./data').cars
+let users = require('./data').users
+let cars = require('./data').cars
 const me = users[0]
 
 const typeDefs = gql`
@@ -14,6 +14,13 @@ const typeDefs = gql`
 
     cars: [Car]
     car(id: Int!): Car
+  }
+
+  type Mutation {
+    makeUser(id: Int!, name: String!): User!
+    removeUser(id: Int!): Boolean
+    createCar(id: Int!, make: String!, model: String!, colour: String!): Car!
+    removeCar(id: Int!): Boolean
   }
 
   type User {
@@ -46,6 +53,38 @@ const resolvers = {
       return cars.filter(car => car.id === id)[0]
     }
   },
+  Mutation: {
+    makeUser: (parent, { id, name }) => {
+      const user = {
+        id,
+        name
+      }
+      users.push(user)
+      return user
+    },
+    removeUser: (parent, { id }) => {
+      const found = users.some(user => user.id === id)
+      console.log('found: ' + found)
+      users = users.filter(user => user.id !== id)
+      return found
+    },
+    createCar: (parent, { id, make, model, colour }) => {
+      const car = {
+        id,
+        make,
+        model,
+        colour
+      }
+      cars.push(car)
+      return car
+    },
+    removeCar: (parent, { id }) => {
+      const found = cars.some(car => car.id === id)
+      console.log('found: ' + found)
+      cars = cars.filter(car => car.id !== id)
+      return found
+    }
+  },
   Car: {
     owner: (parent) => {
       console.log('Car custom resolver, parent')
@@ -55,10 +94,11 @@ const resolvers = {
   },
   User: {
     car: (parent) => {
+      const userHasCars = parent && parent.cars && parent.cars.length
       console.log('User car resolver')
       console.log(parent.cars)
-      console.log(cars.filter(car => parent.cars.includes(car.id)))
-      return cars.filter(car => parent.cars.includes(car.id))
+      console.log(cars.filter(car => userHasCars && parent.cars.includes(car.id)))
+      return cars.filter(car => userHasCars && parent.cars.includes(car.id))
     }
   }
 }
